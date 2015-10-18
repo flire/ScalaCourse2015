@@ -45,14 +45,12 @@ class Complex(val re: Double, val im: Double) {
   def Re() = re
   def Im() = im
 
-  def sqrt() = this ^ (new Complex(0.5, 0))
+  def sqrt() = this ^ new Complex(0.5, 0)
   def abs() = radius
 }
 object Complex {
   private val doublePattern = "\\d+(?:\\.\\d+)?"
-  private val pattern = s"(-?${doublePattern})?\\s*([+-])?\\s*((${doublePattern})?i)?".r
-//  private val reOnlyPattern = s"(-?${doublePattern})".r
-//  private val imOnlyPattern = s"(-?${doublePattern})i".r
+  private val pattern = s"(-?$doublePattern)?\\s*([+-])?\\s*(($doublePattern)?i)?".r
   def apply(re: Double, im: Double) = {
     new Complex(re, im)
   }
@@ -68,6 +66,9 @@ object Complex {
 
   def unapply(complex: Complex): Option[(Double, Double)] = Some((complex.re, complex.im))
 
+  implicit def int2complex(int: Int): Complex = Complex(int, 0)
+  implicit def double2complex(double: Double): Complex = Complex(double, 0)
+
   private def construct(re: Double, sign: String, im: Double) = {
     sign match {
       case "+" | null => new Complex(re, im)
@@ -75,11 +76,3 @@ object Complex {
     }
   }
 }
-Complex("-2 - 3i") == Complex(-2, -3.0)
-Complex("-2 - 3i") + Complex("2 + 3i") == Complex(0,0)
-Complex("1 - i") * Complex("1 - i").conjugation == Complex(2,0)
-Complex("4 + 2i") / Complex("3 - i") == Complex("1 + i")
--Complex("-i") == +Complex("i")
-Complex("2.0")
-Complex("i")
-Complex(0,0)
